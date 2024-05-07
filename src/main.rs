@@ -1,15 +1,13 @@
 use rand::Rng;
-use plotpy::{generate3d, Contour, Plot, StrError};
-
+use csv::WriterBuilder;
+use std::fs::File;
 fn main() {
 
     let diff_rand = 0.5;
-    let seed_rand = 0.5;
     let len: isize = 50;
 
     let mut rng = rand::thread_rng();
-    let mut t: &mut Vec<Vec<f64>> = & mut vec![vec![0.0;len as usize];len as usize];
-    let mut tab : [[f64;9];9] = [[0.0; 9]; 9]; // Initialize tab with default value
+    let t: &mut Vec<Vec<f64>> = & mut vec![vec![0.0;len as usize];len as usize];
     let mut n1: f64 = rng.gen();
 
     t[0][0] = n1;
@@ -27,6 +25,14 @@ fn main() {
         }
     }
 
+    let file = File::create("test.csv").unwrap();
+    let mut writer = WriterBuilder::new().has_headers(false).from_writer(file);
+    for i in t.into_iter() {
+        let record: Vec<String> = i.iter().map(|&x| x.to_string()).collect();
+        let _ = writer.write_record(&record);
+    }
+    let _ = writer.flush();
+
     print_tab(t);
     let ma = max(t);
     println!("{ma}");
@@ -34,11 +40,6 @@ fn main() {
     let mi = min(t);
     println!("{mi}");
 
-    for i in t{
-        for j in i{
-            
-        }
-    }
 
 
 }
